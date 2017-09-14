@@ -1,5 +1,3 @@
-#![feature(conservative_impl_trait)]
-
 /// Dimension of the window to create.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum WindowDim {
@@ -38,9 +36,12 @@ impl WindowOpt {
   }
 }
 
-pub trait Device {
+pub trait Device: Sized {
   /// Type of events.
   type Event;
+
+  /// Iterator over events.
+  type EventIter: Iterator<Item = Self::Event>;
 
   /// Type of device errors.
   type Error;
@@ -54,16 +55,19 @@ pub trait Device {
 
   /// Width of the framebuffer attached to the window.
   fn width(&self) -> u32 {
-    self.size().0
+    self.size()[0]
   }
 
   /// Height of the framebuffer attached to the window.
   fn height(&self) -> u32 {
-    self.size().1
+    self.size()[1]
   }
 
+  // FIXME: as soon as either ATC (https://github.com/rust-lang/rust/issues/44265) or conservative
+  // impl trait in methods (https://github.com/rust-lang/rust/issues/42183) are a real thing,
+  // changethe interface
   /// Retrieve an iterator over any pulled events.
-  fn events<'a>(&'a mut self) -> impl Iterator<Item = Self::Event> + 'a;
+  fn events<'a>(&'a mut self) -> Box<Iterator<Item = Self::Event> + 'a>;
 
   /// Perform a draw. You should recall that function each time you want to draw a single frame to
   /// the screen.
