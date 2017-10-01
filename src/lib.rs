@@ -46,7 +46,7 @@ pub struct WindowOpt {
 impl Default for WindowOpt {
   /// Defaults:
   ///
-  /// - `hide_cursor(true)`
+  /// - `hide_cursor(false)`
   fn default() -> Self {
     WindowOpt {
       hide_cursor: false
