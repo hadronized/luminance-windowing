@@ -26,7 +26,16 @@
 //! - Iterate over the system events captured by your application.
 //! - Draw and swap the buffer chain.
 
+extern crate luminance;
+
+use luminance::context::GraphicsContext;
+
 /// Dimension metrics.
+///
+///   - `Windowed(width, height)` opens in windowed mode with the wished resolution.
+///   - `Fullscreen` opens in fullscreen mode by using the primary monitor resolution.
+///   - `FullscreenRestricted(width, height)` is a mix between `Windowed(width, height)` and
+///     `Fullscreen`. It opens in fullscreen mode by using the wished resolution.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum WindowDim {
   /// Windowed mode.
@@ -38,6 +47,9 @@ pub enum WindowDim {
 }
 
 /// Different window options.
+///
+/// Feel free to look at the different methods available to tweak the options. You may want to start
+/// with `default()` though.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct WindowOpt {
   hide_cursor: bool
@@ -67,25 +79,25 @@ impl WindowOpt {
   }
 }
 
-/// Windowing device.
+/// Rendering surface.
 ///
-/// This type holds anything related to windowing – window system, events, mostly. The interface
-/// is straight forward, so feel free to have a look around.
-pub trait Device: Sized {
+/// This type holds anything related to rendering. The interface is straight forward, so feel
+/// free to have a look around.
+pub trait Surface: GraphicsContext + Sized {
   /// Type of events.
-  type Event;
+  type Events;
 
-  /// Type of device errors.
+  /// Type of surface errors.
   type Error;
 
-  /// Create a device and bootstrap a luminance environment that lives as long as the device
-  /// lives.
-  fn new(dim: WindowDim, title: &str, win_opt: WindowOpt) -> Result<Self, Self::Error>;
+  /// Create a surface along with its associated event stream and bootstrap a luminance environment
+  /// that it lives as long as the surface lives.
+  fn new(dim: WindowDim, title: &str, win_opt: WindowOpt) -> Result<(Self, Self::Events), Self::Error>;
 
-  /// Size of the framebuffer attached to the window.
+  /// Size of the surface’s framebuffer.
   fn size(&self) -> [u32; 2];
 
-  /// Width of the framebuffer attached to the window.
+  /// Width of the surface’s framebuffer.
   ///
   /// # Defaults
   ///
@@ -94,7 +106,7 @@ pub trait Device: Sized {
     self.size()[0]
   }
 
-  /// Height of the framebuffer attached to the window.
+  /// Height of the surface’s framebuffer.
   ///
   /// # Defaults
   ///
@@ -103,13 +115,14 @@ pub trait Device: Sized {
     self.size()[1]
   }
 
-  // FIXME: as soon as either ATC (https://github.com/rust-lang/rust/issues/44265) or conservative
-  // impl trait in methods (https://github.com/rust-lang/rust/issues/42183) are a real thing,
-  // change the interface
-  /// Retrieve an iterator over any pulled events.
-  fn events<'a>(&'a mut self) -> Box<Iterator<Item = Self::Event> + 'a>;
-
   /// Perform a draw. You should recall that function each time you want to draw a single frame to
   /// the screen.
-  fn draw<F>(&mut self, f: F) where F: FnOnce();
+  ///
+  /// # Defaults
+  ///
+  /// This function calls its argument `f` and then swaps buffers.
+  fn draw<F>(&mut self, f: F) where F: FnOnce() {
+    f();
+    self.swap_buffers();
+  }
 }

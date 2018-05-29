@@ -10,3 +10,6 @@ homepage = "https://github.com/phaazon/luminance-windowing"
 repository = "https://github.com/phaazon/luminance-windowing"
 documentation = "https://docs.rs/luminance-windowing"
 readme = "README.md"
+
+[dependencies]
+luminance = { path = "../luminance" }
