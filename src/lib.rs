@@ -85,14 +85,14 @@ impl WindowOpt {
 /// free to have a look around.
 pub trait Surface: GraphicsContext + Sized {
   /// Type of events.
-  type Events;
+  type Event;
 
   /// Type of surface errors.
   type Error;
 
   /// Create a surface along with its associated event stream and bootstrap a luminance environment
   /// that it lives as long as the surface lives.
-  fn new(dim: WindowDim, title: &str, win_opt: WindowOpt) -> Result<(Self, Self::Events), Self::Error>;
+  fn new(dim: WindowDim, title: &str, win_opt: WindowOpt) -> Result<Self, Self::Error>;
 
   /// Size of the surface’s framebuffer.
   fn size(&self) -> [u32; 2];
@@ -125,4 +125,12 @@ pub trait Surface: GraphicsContext + Sized {
     f();
     self.swap_buffers();
   }
+
+  // FIXME: existential impl trait
+  /// Get an iterator over events by blocking until the first event happens.
+  fn wait_events<'a>(&'a mut self) -> Box<Iterator<Item = Self::Event> + 'a>;
+
+  // FIXME: existential impl trait
+  /// Get an iterator over events without blocking if no event is there.
+  fn poll_events<'a>(&'a mut self) -> Box<Iterator<Item = Self::Event> + 'a>;
 }
