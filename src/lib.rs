@@ -115,17 +115,6 @@ pub trait Surface: GraphicsContext + Sized {
     self.size()[1]
   }
 
-  /// Perform a draw. You should recall that function each time you want to draw a single frame to
-  /// the screen.
-  ///
-  /// # Defaults
-  ///
-  /// This function calls its argument `f` and then swaps buffers.
-  fn draw<F>(&mut self, f: F) where F: FnOnce() {
-    f();
-    self.swap_buffers();
-  }
-
   // FIXME: existential impl trait
   /// Get an iterator over events by blocking until the first event happens.
   fn wait_events<'a>(&'a mut self) -> Box<Iterator<Item = Self::Event> + 'a>;
