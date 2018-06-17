@@ -1,4 +1,11 @@
-### 0.1.1
+# 0.2
+
+> Sunday, 17th of June, 2018
+
+- Re-export the new `luminance` backend interface.
+- Remove the concept of `Device` and the concept of `Surface`.
+
+## 0.1.1
 
 > Sunday, 1st of October, 2017
 
