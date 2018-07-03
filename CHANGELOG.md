@@ -1,6 +1,12 @@
+## 0.2.2
+
+> Tuesday, 3rd of July, 2018
+
+  - Add support for `luminance-0.28`.
+
 ## 0.2.1
 
-> Friday, 29 of June, 2018
+> Friday, 29th of June, 2018
 
   - Add support for `luminance-0.27`.
 
