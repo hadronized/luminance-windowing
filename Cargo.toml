@@ -1,6 +1,6 @@
 [package]
 name = "luminance-windowing"
-version = "0.2.2"
+version = "0.2.3"
 license = "BSD-3-Clause"
 authors = ["Dimitri Sabadie <dimitri.sabadie@gmail.com>"]
 description = "Common windowing code for luminance"
@@ -18,4 +18,4 @@ is-it-maintained-open-issues = { repository = "phaazon/luminance-windowing" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-luminance = "0.28"
+luminance = "0.29"
