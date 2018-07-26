@@ -1,3 +1,9 @@
+## 0.2.4
+
+> Thursday, 20th of July, 2018
+
+  - Add support for `luminance-0.30`.
+
 ## 0.2.3
 
 > Tuesday, 13th of July, 2018
